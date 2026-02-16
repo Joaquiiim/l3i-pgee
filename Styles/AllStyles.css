@@ -1,0 +1,48 @@
+a:active,a:visited,a:link 
+{
+    text-decoration:none;
+    color:lightsteelblue;
+}
+a:hover
+{
+    text-decoration:underline;
+    color:lightsteelblue;
+}
+
+label
+{
+    background-color:lightsteelblue;
+    color:whitesmoke;
+    text-transform: uppercase;
+    font-size:small;
+    font-weight: bold;
+    pointer-events: none;
+    border-radius: 4px 6px;
+    display: inline-block;
+    transform: skew(-10deg);
+    padding: 1px 6px;
+    margin: 1px 0;
+    line-height: 1.5 !important;
+    transition: 75ms ease;
+    margin-right:1rem;
+}
+
+input[type="text"],[type="email"],[type="password"]
+{
+    font-size:medium;
+    width:10rem;
+}
+
+#pageContent > form
+{
+    display: flex;
+    align-items: flex-end;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+div[id^="divOf"] /*> input[type="submit"]*/
+{
+    margin-top: .75rem;
+}
