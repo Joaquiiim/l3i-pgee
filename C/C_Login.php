@@ -10,7 +10,11 @@ switch ($_REQUEST['option'])
 {
     case 'form':
         $lastUsedEMail = '';
-        
+        if (PGEESession::estDemarree()
+            && PGEESession::getTypeUtilisateur() != PGEESession::UTILISATEUR_NON_CONNECTE)
+        {
+            header('Location:?action=user');
+        }
         require './V/V_EnTete.php';
         require './V/V_Login_Form.php';
         break;
@@ -29,7 +33,7 @@ switch ($_REQUEST['option'])
         }*/
         $res = $pDOPGEE->getLoginInfos($lastUsedEMail);
         $errorList = [];
-        var_dump($res);
+        //var_dump($res);
         if ($res) //Exists in DB
         {
             if (password_verify($lastUsedPassword,$res['hashMdP'])) //Password OK
@@ -68,6 +72,6 @@ switch ($_REQUEST['option'])
     default:
         $pageTitle = "Page inconnue";
         require_once './V/V_EnTete.php';
-        require_once './V/V_PageNotFound.php';
+        require_once './V/V_UnknownPage.php';
         break;
 }

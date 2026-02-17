@@ -60,7 +60,7 @@ class PGEEDatabase
     
     public function getEventTypes(): array
     {
-        $sQL = ' SELECT te_num AS iD,libelle AS name,u_num AS creatorID'
+        $sQL = 'SELECT te_num AS iD,libelle AS name,u_num AS creatorID'
             . ' FROM TypeEvenement';
         $res = self::$pDO->prepare($sQL);
         $res->execute();
@@ -83,6 +83,7 @@ class PGEEDatabase
             . '(SELECT e_num'
             . ' FROM Inscription'
             . ' WHERE u_num = :userID)'
+            . ' ORDER BY occuringDate ASC'
             . ' LIMIT :nbPerPage OFFSET :pageNb;';
         $res = self::$pDO->prepare($sQL);
         $res->bindParam(':userID',$userID,PDO::PARAM_INT);
@@ -91,6 +92,18 @@ class PGEEDatabase
         $res->execute();
         return $res->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    public function getEventSubscriptionIDs($userID): array
+    {
+        $sQL = 'SELECT e_num'
+            . ' FROM Inscription'
+            . ' WHERE u_num = :userID';
+        $res = self::$pDO->prepare($sQL);
+        $res->bindParam(':userID',$userID,PDO::PARAM_INT);
+        $res->execute();
+        return $res->fetchAll(PDO::FETCH_NUM);
+    }
+    
     
     public function getNbEventSubscriptions($userID): int
     {
@@ -104,7 +117,6 @@ class PGEEDatabase
         $res->bindParam(':userID',$userID,PDO::PARAM_INT);
         $res->execute();
         return $res->fetch(PDO::FETCH_NUM)[0];
-        
     }
     
     public function getEventFromSearchQuery($eventTypeID,$pageNb): array
@@ -131,10 +143,10 @@ class PGEEDatabase
     public function getSubscribedUsers($eventID): array
     {
         $sQL = 'SELECT I.u_num AS iD,nom AS lastName,prenom AS name,adresse_email AS eMailAddr'
-            . 'FROM Inscription I'
-            . 'INNER JOIN Utilisateur U'
-            . 'ON I.u_num = U.u_num'
-            . 'WHERE e_num = :eventID;';
+            . ' FROM Inscription I'
+            . ' INNER JOIN Utilisateur U'
+            . ' ON I.u_num = U.u_num'
+            . ' WHERE e_num = :eventID;';
         $res = self::$pDO->prepare($sQL);
         $res->bindParam(':eventID',$eventID,PDO::PARAM_INT);
         $res->execute();
@@ -144,14 +156,22 @@ class PGEEDatabase
     public function getNbSubscribedUsers($eventID): int
     {
         $sQL = 'SELECT COUNT(*)'
-            . 'FROM Inscription'
-            . 'WHERE e_num = :eventID;';
+            . ' FROM Inscription'
+            . ' WHERE e_num = :eventID;';
         $res = self::$pDO->prepare($sQL);
         $res->bindParam(':eventID',$eventID,PDO::PARAM_INT);
         $res->execute();
         return $res->fetch(PDO::FETCH_NUM)[0];
     }
     
+    /**
+     * Créer un inscription à un évènement pour un utilisateur. Celle-ci sera
+     * datée à l'exécution de cette fonction (qui gère cela automatiquement.
+     * 
+     * @param int $userID
+     * @param int $eventID
+     * @return bool Résultat de la requête.
+     */
     public function createSubscriptionToEvent($userID,$eventID): bool
     {
         try
@@ -171,14 +191,15 @@ class PGEEDatabase
     }
     
     /**
-     * Insère un nouveau compte utilisateur dans la BdD
+     * Insère un nouveau compte utilisateur dans la BdD à partir des informations
+     * requises
      * 
      * @param type $lastName
      * @param type $name
      * @param type $eMailAddr
      * @param type $hash
      * @param type $userTypeID
-     * @return bool Si
+     * @return bool Résultat de la requête.
      */
     public function createUserAcc($lastName,$name,$eMailAddr,$hash,$userTypeID): bool
     {

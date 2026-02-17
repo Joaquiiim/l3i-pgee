@@ -9,8 +9,8 @@ class PGEESession
     public const SESSION_INACTIVE = 0;
     
     public const UTILISATEUR_NON_CONNECTE = 'N';
-    public const UTILISATEUR_ETUDIANT = 'E';
-    public const UTILISATEUR_ORGANISATEUR = 'O';
+    public const UTILISATEUR_ETUDIANT = '0';
+    public const UTILISATEUR_ORGANISATEUR = '1';
     
     private static $status = self::SESSION_INACTIVE;
     
