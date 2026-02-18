@@ -77,9 +77,17 @@ class PGEEDatabase
      */
     public function getEventSubscriptions($userID,$pageNb): array
     {
-        $sQL = 'SELECT *'
-            . ' FROM EventCardMinimalInfos'
-            . ' WHERE eventID IN'
+        $sQL = 'SELECT E.e_num AS eventID,E.u_num AS creatorID,nom AS creatorLastName,prenom AS creatorName,'
+            . ' E.e_num AS eventID,TE.libelle AS eventType,titre AS title,description,description_longue AS longDescription,'
+            . ' date_evenement AS occuringDate,date_derniere_modif AS lastEditDate,nb_places_totales AS participantNbMax,nb_places_dispo AS participantNbCurrent'
+            . ' FROM Evenement E'
+            . ' INNER JOIN TypeEvenement TE'
+            . ' ON E.te_num = TE.te_num'
+            . ' INNER JOIN Utilisateur U'
+            . ' ON E.u_num = U.u_num'
+            . ' INNER JOIN TypeUtilisateur TU'
+            . ' ON U.tu_num = TU.tu_num'
+            . ' WHERE e_num IN'
             . '(SELECT e_num'
             . ' FROM Inscription'
             . ' WHERE u_num = :userID)'
@@ -101,7 +109,33 @@ class PGEEDatabase
         $res = self::$pDO->prepare($sQL);
         $res->bindParam(':userID',$userID,PDO::PARAM_INT);
         $res->execute();
-        return $res->fetchAll(PDO::FETCH_NUM);
+        $tab = [];
+        $res->setFetchMode(PDO::FETCH_NUM);
+        while (($row = $res->fetch()) !== false)
+        {
+            $tab[] = $row[0];
+        }
+        return $tab;//$res->fetchAll(PDO::FETCH_NUM);
+    }
+    
+    public function getEventDetails($eventID)
+    {
+        //eventcardminimalinfos
+        $sQL = 'SELECT E.u_num AS creatorID,nom AS creatorLastName,prenom AS creatorName,'
+            . ' E.e_num AS eventID,TE.libelle AS eventType,titre AS title,description,description_longue AS longDescription,adresse_evenement AS fullAddress,'
+            . ' date_evenement AS occuringDate,date_derniere_modif AS lastEditDate,nb_places_totales AS participantNbMax,nb_places_dispo AS participantNbCurrent'
+            . ' FROM Evenement E'
+            . ' INNER JOIN TypeEvenement TE'
+            . ' ON E.te_num = TE.te_num'
+            . ' INNER JOIN Utilisateur U'
+            . ' ON E.u_num = U.u_num'
+            . ' INNER JOIN TypeUtilisateur TU'
+            . ' ON U.tu_num = TU.tu_num'
+            . ' WHERE e_num=:eventID;';
+        $res = self::$pDO->prepare($sQL);
+        $res->bindParam(':eventID',$eventID,PDO::PARAM_INT);
+        $res->execute();
+        return $res->fetch(PDO::FETCH_ASSOC);
     }
     
     
@@ -182,6 +216,33 @@ class PGEEDatabase
             $res->bindParam(':eventID',$eventID,PDO::PARAM_INT);
             $res->bindValue(':subDate',date("Y-m-d H:i:s"),PDO::PARAM_STR);
             $res->execute();
+            unset($res);
+        }
+        catch (PDOException)
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    
+    /**
+     * Supprime complètement l'inscription à un évènement pour un utilisateur donné.
+     * 
+     * @param type $userID
+     * @param type $eventID
+     * @return bool
+     */
+    public function deleteSubscriptionToEvent($userID,$eventID): bool
+    {
+        try
+        {
+            $sQL = 'DELETE FROM Inscription WHERE u_num=:userID AND e_num=:eventID;';
+            $res = self::$pDO->prepare($sQL);
+            $res->bindParam(':userID',$userID,PDO::PARAM_INT);
+            $res->bindParam(':eventID',$eventID,PDO::PARAM_INT);
+            $res->execute();
+            unset($res);
         }
         catch (PDOException)
         {
@@ -215,6 +276,32 @@ class PGEEDatabase
             $res->bindParam(':userTypeID',$userTypeID,PDO::PARAM_INT);
             $res->execute();
             unset($res);
+        }
+        catch (PDOException)
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * 
+     * @param type $date
+     * @param type $addr
+     * @param type $title
+     * @param type $descr
+     * @param type $descrL
+     * @param type $participantCount
+     * @param type $creatorID
+     * @param type $eventTypeID
+     * @return bool
+     */
+    public function createEvent($date,$addr,$title,$descr,$descrL,$participantCount,$creatorID,$eventTypeID): bool
+    {
+        try
+        {
+            $sQL = 'INSERT INTO Evenement(date_evenement,adresse_evenement,titre,description,description_longue,nb_places_totales,nb_places_dispo,u_num,te_num) VALUES'
+                . '(:date,:addr,:title,:descr,:descrL,:participantCount,:participantCount,:creatorID,:eventTypeID);';
         }
         catch (PDOException)
         {

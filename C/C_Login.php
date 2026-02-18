@@ -9,6 +9,7 @@ $_REQUEST['option'] ??= 'form';
 switch ($_REQUEST['option'])
 {
     case 'form':
+        $pageTitle = 'Connexion';
         $lastUsedEMail = '';
         if (PGEESession::estDemarree()
             && PGEESession::getTypeUtilisateur() != PGEESession::UTILISATEUR_NON_CONNECTE)

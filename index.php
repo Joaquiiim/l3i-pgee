@@ -27,6 +27,7 @@ switch ($_REQUEST['action'])
         break;
     
     case 'eventDisplay':
+        require_once './C/C_EventDisplay.php';
         break;
     
     default:
