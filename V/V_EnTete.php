@@ -10,11 +10,15 @@
         <div>Gestion des évènements étudiants</div>
     </div>
     <div id="pageHeader">
+        <div id="serviceInfos">
+            <div id="textLogo"><?php echo PGEE_APP_NAME; ?></div>
+            <div id="textLogoSubtitle">Gestion des évènements étudiants</div>
+            <div>Utilisateur: <b><?php echo PGEESession::getNomUtilisateur(); ?></b></div>
+        </div>
         <?php
-            echo PGEESession::getNomUtilisateur();
             echo HTMLElem::navbar(PGEESession::getTypeUtilisateur());
             ?>
-    </div>
+        </div>
     <div id="pageContent">
         <div id="pageName">
             <?php

@@ -1,12 +1,22 @@
+*
+{
+    font-family:"Verdana Pro Condensed","Verdana","Tahoma",sans-serif;
+}
+
+div
+{
+    font-size:small;
+}
+
 a:active,a:visited,a:link 
 {
     text-decoration:none;
-    color:lightsteelblue;
+    font-weight:bold;
 }
 a:hover
 {
     text-decoration:underline;
-    color:lightsteelblue;
+    color:lightseagreen;
 }
 
 label
@@ -25,6 +35,96 @@ label
     line-height: 1.5 !important;
     transition: 75ms ease;
     margin-right:1rem;
+}
+
+#serviceInfos
+{
+    float:left;
+}
+
+#pageHeader
+{
+    z-index:999;
+    background-color:steelblue;
+    color:white;
+    padding:1rem;
+    position: fixed;
+    width:100%;
+    & div:first-child
+    {
+        font-size:xx-large;
+    }
+    & a
+    {
+        color:whitesmoke;
+    }
+}
+
+#pageContent
+{
+    margin-right:15%;
+    margin-left:15%;
+    padding-right:1rem;
+    padding-left:1rem;
+    padding-top:8rem;
+    background-color:aquamarine;
+    padding-bottom:1rem;
+    border-radius:20px;
+    & #pageName
+    {
+        padding:1rem;
+        font-size:x-large;
+        font-style:oblique;
+        font-weight:bolder;
+        text-transform:uppercase;
+        color:lightseagreen;
+    }
+    & a
+    {
+        color:lightseagreen;;
+    }
+    & #listeErreur
+    {
+        background:wheat;
+        color:salmon;
+        border-radius:1rem;
+        padding:1rem;
+        margin-bottom:2rem;
+        font-weight:bold;
+    }
+    & form
+    {
+        display: flex;
+        align-items: flex-end;
+        align-content: center;/*flex-start;*/
+        flex-wrap: wrap;
+        flex-direction: column;
+        background:lightcyan;
+        border-radius:1rem;
+        padding:1rem;
+        margin-bottom:2rem;
+    }
+}
+
+#bottomText
+{
+    padding:2rem;
+    color:grey;
+    text-align:center;
+}
+
+#navbar
+{
+    display:flex;
+    margin-right:2%;
+    float:right;
+    list-style:none;
+    font-size:medium;
+    & li
+    {
+        margin-right:2%;
+        margin-left:2%;
+    }
 }
 
 .cardTag
@@ -46,19 +146,39 @@ label
     line-break:unset;
 }
 
-input[type="text"],[type="email"],[type="password"]
+input[type="text"],[type="email"],[type="password"],[type="number"],[type^="datetime"]
 {
-    font-size:medium;
-    width:10rem;
+    /*font-size:medium;*/
+    width:14rem;
+    height:1rem;
+    padding:.25rem;
+    /*resize:none;*/
+}
+textarea
+{
+    resize:none;
+    width:14rem;
+    padding:.25rem;
+    font-size:small;
 }
 
-#pageContent > form
+select
 {
-    display: flex;
-    align-items: flex-end;
-    align-content: flex-start;
-    flex-wrap: wrap;
-    flex-direction: column;
+    width:14.75rem;
+    padding:.25rem;
+}
+
+button,input[type="submit"]
+{
+    text-transform:uppercase;
+    font-style:oblique;
+    font-weight:bolder;
+    padding:.75rem 1rem;
+    border-radius:10px;
+    color:white;
+    background-color:lightseagreen;
+    border:none;
+    cursor:pointer;
 }
 
 div[id^="divOf"] /*> input[type="submit"]*/
