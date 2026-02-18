@@ -41,7 +41,7 @@ class HTMLElem
     public static function selectAvecTableau($tableau,$cleOuIValeur,$cleOuITexte,$label,$nom,$iD,$tabAttributs = [],
         $nouvLignesApres = 0,$tabAttributsLabel = [],$nouvLignesApresLabel = 0): string
     {
-        $code = '';
+        $code = '<div id="divOf'.ucfirst($iD).'">';
         $optionSelectionnee = isset($tabAttributs['selected'])? $tabAttributs['selected']: null;
         unset($tabAttributs['selected']);
         if (!empty($label))
@@ -60,7 +60,7 @@ class HTMLElem
                 . ($ligne[$cleOuIValeur] == $optionSelectionnee? ' selected="selected"': '')
                 . ">$ligne[$cleOuITexte]</option>";
         }
-        return $code.'</select>'.self::sautLigne($nouvLignesApres);
+        return $code.'</select></div>'.self::sautLigne($nouvLignesApres);
     }
 
 
@@ -258,13 +258,13 @@ class HTMLElem
         return "<div class=\"$cSSClass\">"
                 . '<div class="eventTitle">'.$eventRow['title']
             . "</div><div>Créé par $eventRow[creatorLastName] $eventRow[creatorName]</div>$eventRow[description]<br />$code"
-            . "<div class=\"cardTag\">Places réservées</div> $eventRow[participantNbCurrent]/$eventRow[participantNbMax]"
+            . "<div class=\"cardTag\">Places disponibles</div> $eventRow[participantNbCurrent]/$eventRow[participantNbMax]"
             . self::lien("?action=eventDisplay&option=showDetails&eventID=$eventRow[eventID]",'Afficher plus d\'informations')."</div>";
     }
     
     public static function navbar($userTypeID): string
     {
-        $tabActions = [];
+        //$tabActions = [];
         $code = '<ul id="navbar">';
         switch ($userTypeID)
         {
@@ -281,6 +281,8 @@ class HTMLElem
                     '?action=eventDisplay&option=edit'=>'Gérer vos évènements'];
                 break;
             default:
+                $tabActions = ['?action=login'=>'Se connecter',
+                    '?action=createAcc'=>'Créer un compte &Eacute;tudiant'];
                 break;
         }
         foreach ($tabActions as $act => $name)

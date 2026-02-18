@@ -10,7 +10,7 @@ function testerFormatNumero($chaine,$longueurEnCara): bool
 }
 
 //Pour tester un numéro sans format particulier, mais dont le nombre de chiffres maximum connu.
-function testerFormatNombre($nombre,$longueurEnCara): bool
+function verifierNombre($nombre,$longueurEnCara): bool
 {
     return isset($nombre) && preg_match("/[0-9]{1,$longueurEnCara}/",$nombre);
 }

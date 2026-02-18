@@ -20,6 +20,7 @@ switch ($_REQUEST['option'])
             $tabEventDetails = $pDOPGEE->getEventDetails($_REQUEST['eventID']);
             $pageTitle = "Informations sur l\'évènement - $tabEventDetails[title]";
             $userIsSubscribed = array_search($_REQUEST['eventID'],$pDOPGEE->getEventSubscriptionIDs(PGEESession::getIDUtilisateur())) !== false;
+            $createdByUser = $tabEventDetails['creatorID'] == PGEESession::getIDUtilisateur();
             require './V/V_EnTete.php';
             require './V/V_EventDisp_ShowDetails.php';
         }
@@ -34,8 +35,17 @@ switch ($_REQUEST['option'])
         break;
     
     case 'edit':
-        $pageTitle = 'Modifier un évènement';
-        
+        if (empty($_REQUEST['eventID']))
+        {
+            $pageTitle = "Page inconnue";
+            require_once './V/V_EnTete.php';
+            require_once './V/V_UnknownPage.php';
+        }
+        else
+        {
+            $tabEventDetails = $pDOPGEE->getEventDetails($_REQUEST['eventID']);
+            $pageTitle = "Modifier l\'évènement - $tabEventDetails[title]";
+        }
         break;
     
     case 'checkEdit':
@@ -45,6 +55,7 @@ switch ($_REQUEST['option'])
     case 'creation':
         $pageTitle = 'Créer un nouvel évènement';
         $tabEventTypes = $pDOPGEE->getEventTypes();
+        $eventTitle = $eventDescr = $eventDescrL = $eventFullAddr = $eventDate = $eventTypeID = $eventParticipantNb = '';
         require './V/V_EnTete.php';
         require './V/V_EventDisp_Creation_Form.php';
         break;
@@ -56,26 +67,46 @@ switch ($_REQUEST['option'])
         $eventTitle = htmlentities(filter_input(INPUT_POST,'txtEventName'));
         $eventDescr = htmlentities(filter_input(INPUT_POST,'txtDescr'));
         $eventDescrL = htmlentities(filter_input(INPUT_POST,'txtDescrL'));
-        $eventDate = date_create_from_format('y-m-d\Th:s',filter_input(INPUT_POST,'txtEventDate'));
+        $eventFullAddr = htmlentities(filter_input(INPUT_POST,'txtFullAddr'));
+        $eventDate = date_create_from_format('Y-m-d?H:i',$_REQUEST['txtEventDate']);
         $eventTypeID = filter_input(INPUT_POST,'lstEventType');
-        if (!(verifierTexte($eventTitle) && verifierTexte($eventDescr) && verifierTexte($eventDescrL) && !empty($eventDate)))
+        $eventParticipantNb = htmlspecialchars(filter_input(INPUT_POST,'txtParticipantNb'));
+        
+        if (!(verifierTexte($eventTitle) && verifierTexte($eventDescr) && verifierTexte($eventDescrL)
+                && verifierNombre($eventParticipantNb,5)))// && !empty($eventDate)))
         {
             //'form'
             $errorList = [verifierTexte($eventTitle)?: 'Le titre saisi n\'est pas valide.',
-                verifierTexte($eventDescr)?: 'La description saisie n\est pas valide.',
-                verifierTexte($eventDescrL)?: 'La description longue saisie n\est pas valide.',
+                verifierTexte($eventDescr)?: 'La description saisie n\'est pas valide.',
+                verifierTexte($eventDescrL)?: 'La description longue saisie n\'est pas valide.',
+                verifierTexte($eventFullAddr)?: 'L\'addresse saisie n\'est pas valide.',
+                verifierNombre($eventParticipantNb,5)?: 'Le nombre de participant est invalide: saisissez un nombre entier',
                 empty($eventDate)?: 'Le format de la date n\'est pas valide.'];
         }
         else
         {
-            if ($eventDate->diff(date()) < 0)
+            if ($eventDate->diff(date_create('now'))->d < 0)
             {
                 $errorList[] = 'La date de l\'évènement à venir est antérieur à la date du jour.';
             }
         }
+        
         if (empty($errorList))
         {
-            $pDOPGEE->createEvent();
+            $pDOPGEE->createEvent($eventDate);
+            header('Location:?action=eventDisplay&option=createdEvents');
+            die();
+        }
+        else
+        {
+            //creation
+            $pageTitle = 'Créer un nouvel évènement';
+            $tabEventTypes = $pDOPGEE->getEventTypes();
+            $eventTitle = $eventDescr = $eventDescrL = $eventDate = $eventTypeID = $eventParticipantNb = '';
+            require './V/V_EnTete.php';
+            echo HTMLElem::listeErreurs($errorList);
+            require './V/V_EventDisp_Creation_Form.php';
+            break;
         }
         break;
     
@@ -83,6 +114,10 @@ switch ($_REQUEST['option'])
         $pageTitle = 'Modification du status de l\'inscription...';
         $eventID = filter_input(INPUT_POST,'txtEventID');
         $userIsSubscribed = array_search($eventID,$pDOPGEE->getEventSubscriptionIDs(PGEESession::getIDUtilisateur())) !== false;
+        if (isset($_REQUEST['btnEdit']))
+        {
+            header("Location:?action=user&option=edit&eventID=$eventID");
+        }
         if ($userIsSubscribed)
         {
             //Delete the subscription, because it exists in DB.

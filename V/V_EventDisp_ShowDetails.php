@@ -10,4 +10,5 @@ echo HTMLElem::formulaire('frmEventDetails','action=eventDisplay&option=toggleSu
     HTMLElem::input('text','Places: Restantes/Total','txtParticipantInfo','txtParticipantInfo',"$tabEventDetails[participantNbCurrent]/$tabEventDetails[participantNbMax]",['readonly'=>true]),
     $userIsSubscribed? HTMLElem::input('submit','','btnSubscribe','btnSubscribe',"Se désinscire de cet évènement"):
     HTMLElem::input('submit','','btnSubscribe','btnSubscribe',"S'inscrire à cet évènement"),
+    $createdByUser? HTMLElem::input('submit','','btnEdit','btnEdit',"Modifier l'évènement"): '',
 ]);
