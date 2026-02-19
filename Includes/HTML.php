@@ -216,17 +216,17 @@ class HTMLElem
         return $code.'</ul></div>';
     }
     
-    public static function listePages($nbEnregistrementsRequete,$pageCourante): string
+    public static function listePages($nbEnregistrementsRequete,$pageCourante,$uRL): string
     {
-        $code = '<div class="pageNbInfo">Affichage des évènements: '.($pageCourante * PGEE_EVENT_PER_PAGE + 1)
-            . ' jusqu\'à '.(($pageCourante+1)*PGEE_EVENT_PER_PAGE > $nbEnregistrementsRequete? $nbEnregistrementsRequete: ($pageCourante+1)*PGEE_EVENT_PER_PAGE)
-            . ' </div><ul class="pageNb">Aller à la page: ';
+        $code = '<div class="pageNb">Affichage: <b>'.($pageCourante * PGEE_EVENT_PER_PAGE + 1)
+            . ' ~ '.(($pageCourante+1)*PGEE_EVENT_PER_PAGE > $nbEnregistrementsRequete? $nbEnregistrementsRequete: ($pageCourante+1)*PGEE_EVENT_PER_PAGE)
+            . "</b> / $nbEnregistrementsRequete | Aller à la page: <ul>";
         $totalNbPages = (int)($nbEnregistrementsRequete / PGEE_EVENT_PER_PAGE) + ($nbEnregistrementsRequete % PGEE_EVENT_PER_PAGE <= 0? 0: 1);
         for ($pageNb = 0; $pageNb < $totalNbPages; $pageNb++)
         {
-            $code .= '<li>'.self::lien("?action=user&option=homePage&page=$pageNb",$pageNb+1).'</li>';
+            $code .= '<li>'.self::lien("?$uRL&page=$pageNb",$pageNb+1).'</li>';
         }
-        return "$code</ul>";
+        return "$code</ul></div>";
     }
     
     public static function eventCard($eventRow): string
@@ -234,7 +234,7 @@ class HTMLElem
         $code = '';
         $cSSClass = 'event';
         $occuredSince = (date_create($eventRow['occuringDate'])->diff(new DateTime('now')))->d;
-        $d = date_create($eventRow['occuringDate'])->format('d/m/Y\, h:i:s');
+        $d = date_create($eventRow['occuringDate'])->format('d/m/Y\, H:i');
         if ($occuredSince <= 0)
         {
             $code .= "<div class=\"cardTag\"><b>Expiré:</b> a eu lieu il y a $occuredSince jours ($d)</div>";
@@ -249,7 +249,7 @@ class HTMLElem
         if (isset($eventRow['lastEditDate']))
         {
             $d = date_create($eventRow['lastEditDate'])->format('d/m/Y');
-            $code .= "<div class=\"cardTag\">(Modifié par son auteur le $d)</div>";
+            $code .= "<div class=\"cardTag\">Modifié par son auteur ($d)</div>";
         }
         if (isset($eventRow['userIsSubscribed']))
         {
@@ -258,8 +258,8 @@ class HTMLElem
         return "<div class=\"$cSSClass\">"
                 . '<div class="eventTitle">'.$eventRow['title']
             . "</div><div>Créé par $eventRow[creatorLastName] $eventRow[creatorName]</div>$eventRow[description]<br />$code"
-            . "<div class=\"cardTag\">Places disponibles</div> $eventRow[participantNbCurrent]/$eventRow[participantNbMax]"
-            . self::lien("?action=eventDisplay&option=showDetails&eventID=$eventRow[eventID]",'Afficher plus d\'informations')."</div>";
+            . "<div class=\"cardTag\">Places disponibles: $eventRow[participantNbCurrent]/$eventRow[participantNbMax]</div>"
+            . self::lien("?action=eventDisplay&option=showDetails&eventID=$eventRow[eventID]",'Actions/Afficher plus...')."</div>";
     }
     
     public static function navbar($userTypeID): string
@@ -271,14 +271,16 @@ class HTMLElem
             case 0: //type étudiant
                 $tabActions = ['?action=user&option=logOut'=>'Déconnexion',
                     '?action=user&option=homePage'=>'Page d\'accueil',
+                    '?action=eventDisplay&option=all'=>'Afficher tout',
                     '?action=eventDisplay&option=search'=>'Rechercher'];
                 break;
             case 1: //type organisateur
                 $tabActions = ['?action=user&option=logOut'=>'Déconnexion',
                     '?action=user&option=homePage'=>'Page d\'accueil',
                     '?action=eventDisplay&option=search'=>'Rechercher',
+                    '?action=eventDisplay&option=all'=>'Afficher tout',
                     '?action=eventDisplay&option=creation'=>'Créer un évènement',
-                    '?action=eventDisplay&option=edit'=>'Gérer vos évènements'];
+                    '?action=eventDisplay&option=createdEvents'=>'Gérer vos évènements'];
                 break;
             default:
                 $tabActions = ['?action=login'=>'Se connecter',

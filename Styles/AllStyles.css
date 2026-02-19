@@ -1,12 +1,22 @@
+*
+{
+    font-family:"Verdana Pro Condensed","Verdana","Tahoma",sans-serif;
+}
+
+div
+{
+    font-size:small;
+}
+
 a:active,a:visited,a:link 
 {
     text-decoration:none;
-    color:lightsteelblue;
+    font-weight:bold;
 }
 a:hover
 {
     text-decoration:underline;
-    color:lightsteelblue;
+    color:inherit;
 }
 
 label
@@ -25,6 +35,146 @@ label
     line-height: 1.5 !important;
     transition: 75ms ease;
     margin-right:1rem;
+}
+
+#serviceInfos
+{
+    float:left;
+}
+
+#pageHeader
+{
+    z-index:999;
+    background-color:steelblue;
+    color:white;
+    padding:1rem;
+    position: fixed;
+    width:100%;
+    & div:first-child
+    {
+        font-size:xx-large;
+    }
+    & a
+    {
+        color:whitesmoke;
+    }
+}
+
+#pageContent
+{
+    line-height:1.5rem;
+    margin-right:15%;
+    margin-left:15%;
+    padding-right:1rem;
+    padding-left:1rem;
+    padding-top:8rem;
+    background-color:aquamarine;
+    padding-bottom:2rem;
+    border-radius:20px;
+    & #pageName
+    {
+        padding:1rem;
+        font-size:x-large;
+        font-style:oblique;
+        font-weight:bolder;
+        text-transform:uppercase;
+        color:lightseagreen;
+    }
+    & a
+    {
+        color:steelblue;
+    }
+    & #listeErreur
+    {
+        background:wheat;
+        color:salmon;
+        border-radius:1rem;
+        padding:1rem;
+        margin-bottom:2rem;
+        font-weight:bold;
+    }
+    & form
+    {
+        display: flex;
+        align-items: flex-end;
+        align-content: center;/*flex-start;*/
+        flex-wrap: wrap;
+        flex-direction: column;
+        background:lightcyan;
+        border-radius:1rem;
+        padding:1rem;
+        margin-top:2rem;
+        margin-bottom:2rem;
+    }
+}
+
+#bottomText
+{
+    padding:2rem;
+    color:grey;
+    text-align:center;
+}
+
+.pageNb
+{
+    background-color: lightseagreen;
+    color: whitesmoke;
+    border-radius: 10px;
+    margin-right: 20%;
+    margin-left: 20%;
+    padding: .5rem;
+    & ul
+    {
+        list-style: none;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        & li
+        {
+            padding-right:1rem;
+            padding-left:1rem;
+            font-size:medium;
+        }
+    }
+}
+
+div.event
+{
+    color:gray;
+    margin-right:5rem;
+    margin-left:5rem;
+    margin-bottom:1rem;
+    margin-top:1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    background-color:lightcyan;
+    & .eventTitle
+    {
+        text-transform: uppercase;
+        font-style: oblique;
+        font-weight:bold;
+        font-size:larger;
+    }
+    & div
+    {
+        margin:.5rem;
+        font-weight:bold;
+    }
+}
+
+#navbar
+{
+    display:flex;
+    margin-right:2%;
+    float:right;
+    list-style:none;
+    font-size:medium;
+    & li
+    {
+        margin-right:2%;
+        margin-left:2%;
+    }
 }
 
 .cardTag
@@ -46,19 +196,49 @@ label
     line-break:unset;
 }
 
-input[type="text"],[type="email"],[type="password"]
+input[type="text"],[type="email"],[type="password"],[type="number"],[type^="datetime"]
 {
-    font-size:medium;
-    width:10rem;
+    /*font-size:medium;*/
+    width:16.7rem;
+    height:1rem;
+    padding:.25rem;
+    /*resize:none;*/
+}
+textarea[readonly="readonly"],input[type="text"][readonly="readonly"]
+{
+    color:gray;
+    border:none;
 }
 
-#pageContent > form
+textarea
 {
-    display: flex;
-    align-items: flex-end;
-    align-content: flex-start;
-    flex-wrap: wrap;
-    flex-direction: column;
+    resize:none;
+    width:16.7rem;
+    padding:.25rem;
+    font-size:small;
+}
+
+select
+{
+    width:17.4rem;
+    padding:.25rem;
+}
+
+button,input[type="submit"]
+{
+    text-transform:uppercase;
+    font-style:oblique;
+    font-weight:bolder;
+    padding:.75rem 1rem;
+    border-radius:10px;
+    color:white;
+    background-color:lightseagreen;
+    border:none;
+    cursor:pointer;
+}
+input[type="submit"][id="btnCancelEvent"]
+{
+    background-color:coral;
 }
 
 div[id^="divOf"] /*> input[type="submit"]*/
