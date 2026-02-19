@@ -1,37 +1,16 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/SeleniumTests/SeleneseTest.php to edit this template
- */
+require 'Includes/HTML.php';
+class HTMLTest extends PHPUnit\Framework\TestCase {
 
-/**
- * Description of HTMLTest
- *
- * @author marro
- */
-class HTMLTest extends PHPUnit_Framework_TestCase {
+    public function testOutput()
+    {
+       // Capture the output
+       ob_start();
+       echo HTMLElem::input('text','Test','txtTest','txtTest','69');
+       $output = ob_get_clean();
 
-    /**
-     * @var \RemoteWebDriver
-     */
-    protected $webDriver;
-
-    public function setUp() {
-        $capabilities = array(\WebDriverCapabilityType::BROWSER_NAME => 'firefox');
-        $this->webDriver = RemoteWebDriver::create('http://localhost:4444/wd/hub', $capabilities);
-    }
-
-    public function tearDown() {
-        $this->webDriver->close();
-    }
-
-    protected $url = 'http://www.netbeans.org/';
-
-    public function testSimple() {
-        //$this->webDriver->get($this->url);
-        // checking that page title contains word 'NetBeans'
-        //$this->assertContains('NetBeans', $this->webDriver->getTitle());
+       //$this->assertEquals("Hello, Docker!", $output);
     }
 
 }
