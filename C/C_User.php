@@ -13,17 +13,17 @@ if (PGEESession::getTypeUtilisateur() != PGEESession::UTILISATEUR_NON_CONNECTE)
         case 'homePage':
             $_REQUEST['page'] ??= 0;
             $currentPage = &$_REQUEST['page'];
-            $pageTitle = 'Page d\'accueil';
+            $pageTitle = 'Page d\'accueil - Vos inscriptions';
             $nbUpcomingEvents = $pDOPGEE->getNbEventSubscriptions(PGEESession::getIDUtilisateur());
             require './V/V_EnTete.php';
             require './V/V_User_HomePage.php';
             break;
 
-        case 'settings':
-            $pageTitle = 'Paramètres du compte';
-            
-            require './V/V_EnTete.php';
-            break;
+//        case 'settings':
+//            $pageTitle = 'Paramètres du compte';
+//            
+//            require './V/V_EnTete.php';
+//            break;
 
         case 'logOut':
             $pageTitle = 'Déconnexion en cours...';

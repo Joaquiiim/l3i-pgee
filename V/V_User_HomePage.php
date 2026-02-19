@@ -18,6 +18,6 @@ else
         {
             echo HTMLElem::eventCard($event);
         }
-        echo HTMLElem::listePages($nbUpcomingEvents,$currentPage);
+        echo HTMLElem::listePages($nbUpcomingEvents,$currentPage,'action=user&option=homePage');
     }
 }
