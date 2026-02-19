@@ -2,10 +2,10 @@
 //Misc
 define('PGEE_APP_NAME','PGEE');
 //Database related
-define('PGEE_DB_USERNAME',getenv('DB_USER'));
-define('PGEE_DB_PASSWORD',file_get_contents(getenv('PASSWORD_FILE_PATH')));
-define('PGEE_DB_NAME',getenv('DB_NAME'));
-define('PGEE_DB_SERVER',getenv('DB_HOST'));
+define('PGEE_DB_USERNAME',empty(getenv('DB_USER'))? 'root': getenv('DB_USER'));
+define('PGEE_DB_PASSWORD',empty(getenv('PASSWORD_FILE_PATH'))? '': file_get_contents(getenv('PASSWORD_FILE_PATH')));
+define('PGEE_DB_NAME',empty(getenv('DB_NAME'))? 'l3ipgee': getenv('DB_NAME'));
+define('PGEE_DB_SERVER',empty(getenv('DB_HOST'))? 'localhost': getenv('DB_HOST'));
 define('PGEE_DB_PORT',''); //Should start w/ ":" if necessary
 //Events related
 define('PGEE_EVENT_RECENT_THRESHOLD',14);
